@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 44f6298b63162af49b161af8f69d4513, type: 3}
+  m_Name: Config
+  m_EditorClassIdentifier: 
+  numberOfShapesToSpawn: 250
+  headless: 0
+  _systemsEnabled:
+    keys:
+    - SpawnSystem
+    - CircleCollisionDetectionSystem
+    - SizeReduceSystem
+    - WallCollisionDetectionSystem
+    - BounceBackSystem
+    - PositionUpdateSystem
+    - DisplayUpdateSystem
+    - EndEventSystem
+    - DeoverlapSystem
+    - ColorDecisionSystem
+    values: 01010101010101010101
