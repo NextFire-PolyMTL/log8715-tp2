@@ -36,3 +36,10 @@ Entities
   - 3000 Prey
   - 2500 Pred
   - 12000 grid size
+
+### Subgoals
+- Have transform in the structures to deal with it via the job system
+
+
+### <span style="color:red; font-weight:bold">Questions</span>
+- How does the reproduce part doesn't enable a entity to reproduce with itself ??
