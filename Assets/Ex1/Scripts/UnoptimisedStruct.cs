@@ -1,21 +1,21 @@
 using UnityEngine;
 public struct UnoptimisedStruct1
 {
-    public float velocity;
-    public bool canJump;
-    public int baseHP;
-    public int nbAllies;
-    public Vector3 position;
-    public int currentHp;
-    public float[] distancesFromObjectives;
-    public byte colorAlpha;
-    public double range;
-    public UnoptimizedStruct2 mainFriend;
-    public bool isVisible;
-    public UnoptimizedStruct2[] otherFriends;
-    public bool isStanding;
-    public float size;
-    
+    public UnoptimizedStruct2 mainFriend;  // 48 ??
+    public UnoptimizedStruct2[] otherFriends; // Pointer = 8 Bytes
+    public float[] distancesFromObjectives; // Pointer = 8 Bytes
+    public double range; // Double = 8 Bytes
+    public Vector3 position; // 3x float = 12 bytes
+    public float velocity; // float = 4 Bytes
+    public float size; // float = 4 Bytes
+    public int baseHP; // int = 4 bytes
+    public int nbAllies; // int = 4 bytes
+    public int currentHp; // int = 4 bytes
+    public byte colorAlpha; // Byte = 1 Byte
+    public bool canJump; // Bool = 1 Byte
+    public bool isVisible; // Bool = 1 Byte
+    public bool isStanding; // Bool = 1 Byte
+
     public UnoptimisedStruct1(float velocity, bool canJump, int baseHP, int nbAllies, Vector3 position, int currentHp, float[] distancesFromObjectives, byte colorAlpha, double range, UnoptimizedStruct2 mainFriend, bool isVisible, UnoptimizedStruct2[] otherFriends, bool isStanding, float size)
     {
         this.velocity = velocity;
@@ -44,19 +44,19 @@ public enum FriendState
     isJumping,
 }
 
-public struct UnoptimizedStruct2 
+public struct UnoptimizedStruct2
 {
-    public bool isAlive;
-    public float height;
-    public FriendState currentState;
-    public float velocity;
-    public int currentObjective;
-    public double maxSight;
-    public bool canJump;
-    public float acceleration;
-    public Vector3 position;
-    public float maxVelocity;
-    
+    public Vector3 position; // 3x float = 12 bytes
+    public float height; // float = 4 Bytes
+    public double maxSight; // Double = 8 Bytes
+    public float velocity; // float = 4 Bytes
+    public float acceleration; // float = 4 Bytes
+    public float maxVelocity; // float = 4 Bytes
+    public int currentObjective; // int = 4 Bytes
+    public FriendState currentState; // enum short?? 1 Byte?
+    public bool canJump; // Bool = 1 Byte
+    public bool isAlive; // Bool = 1 Byte
+
     public UnoptimizedStruct2(bool isAlive, float height, FriendState currentState, float velocity, int currentObjective, double maxSight, bool canJump, float acceleration, Vector3 position, float maxVelocity)
     {
         this.isAlive = isAlive;
