@@ -14,18 +14,23 @@ public class MovePreyTowardPlant : MonoBehaviour
 
     public void Update()
     {
-        var closestDistance = float.MaxValue;
-        var closestPosition = transform.position;
-        foreach(var plant in Ex4Spawner.PlantTransforms)
-        {
-            var distance = Vector3.Distance(plant.position, transform.position);
-            if (distance < closestDistance)
-            {
-                closestDistance = distance;
-                closestPosition = plant.position;
-            }
-        }
+        /* Local arrays used for Job parameters */
+        var plantsPos = JobHandler.GetPositons(Ex4Spawner.PlantTransforms);
+        var paramArray = _velocity.ConvertToArray();
 
-        _velocity.velocity = (closestPosition - transform.position) * Ex4Config.PreySpeed;
+        var job = new JobHandler.MoveJob() {
+            paramArray = paramArray,
+            referenceSpeed = Ex4Config.PreySpeed,
+            ownPos = transform.position,
+            chasedPos = plantsPos
+        };
+
+        JobHandle jh = job.Schedule<JobHandler.MoveJob>();
+        jh.Complete();
+        _velocity.UpdateValues(paramArray);
+
+        /* Free native arrays used to avoid memory leak */
+        plantsPos.Dispose();
+        paramArray.Dispose();
     }
 }

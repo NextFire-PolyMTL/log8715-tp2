@@ -61,5 +61,26 @@ public class JobHandler : MonoBehaviour
         }
     }
 
+    /* Job handling the entities movement */
+    public struct MoveJob : IJob {
+        public NativeArray<Vector3> paramArray;
+        /* Either predator or prey speed defined in config*/
+        [ReadOnly] public float referenceSpeed;
+        [ReadOnly] public Vector3 ownPos;
+        [ReadOnly] public NativeArray<Vector3> chasedPos;
+        public void Execute() {
+            var closestDist = float.MaxValue;
+            var closestPos = ownPos;
+            foreach (var pos in chasedPos) {
+                var dist = Vector3.Distance(pos, ownPos);
+                if (dist < closestDist) {
+                    closestDist = dist;
+                    closestPos = pos;
+                }
+            }
+            paramArray[0] = (closestPos - ownPos) * referenceSpeed;
+        }
+    }
+
 
 }

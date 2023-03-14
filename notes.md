@@ -43,6 +43,7 @@ Entities
 
 ### <span style="color:red; font-weight:bold">Questions</span>
 - How does the reproduce part doesn't enable a entity to reproduce with itself ??
+- Is the vector this really unavoidable, does putting getters/setters work if then we put `class.attribute` in the job handler (test first to see if it breaks before asking maybe)
 
 ### Include in report
 - Job handling is the same for all lifetime changers because they are really similar.
