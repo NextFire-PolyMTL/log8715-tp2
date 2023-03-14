@@ -25,8 +25,8 @@ public class MovePreyTowardPlant : MonoBehaviour
             chasedPos = plantsPos
         };
 
-        JobHandle jh = job.Schedule<JobHandler.MoveJob>();
-        jh.Complete();
+        JobHandle jobHandler = job.Schedule<JobHandler.MoveJob>();
+        jobHandler.Complete();
         _velocity.UpdateValues(paramArray);
 
         /* Free native arrays used to avoid memory leak */

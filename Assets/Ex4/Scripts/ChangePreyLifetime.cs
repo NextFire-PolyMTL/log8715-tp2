@@ -1,6 +1,6 @@
-﻿using UnityEngine;
-using Unity.Collections;
+﻿using Unity.Collections;
 using Unity.Jobs;
+using UnityEngine;
 
 public class ChangePreyLifetime : MonoBehaviour
 {
@@ -28,8 +28,8 @@ public class ChangePreyLifetime : MonoBehaviour
             ownTypePos = preysPos
         };
 
-        JobHandle jh = job.Schedule<JobHandler.LifeChangeJob>();
-        jh.Complete();
+        JobHandle jobHandler = job.Schedule<JobHandler.LifeChangeJob>();
+        jobHandler.Complete();
         _lifetime.UpdateValues(paramArray);
 
         /* Free native arrays used to avoid memory leak */
