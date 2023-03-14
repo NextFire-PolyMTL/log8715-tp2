@@ -13,9 +13,11 @@ public class ChangePlantLifetime : MonoBehaviour
 
     public void Update()
     {
+        /* Local arrays used for Job parameters */
         var emptyArray = new NativeArray<Vector3>(0, Allocator.Persistent);
         var preysPos = JobHandler.GetPositons(Ex4Spawner.PreyTransforms);
         var paramArray = _lifetime.ConvertToArray();
+
         var job = new JobHandler.LifeChangeJob() {
             paramArray = paramArray,
             ownPos = transform.position,
@@ -29,8 +31,8 @@ public class ChangePlantLifetime : MonoBehaviour
         _lifetime.UpdateValues(paramArray);
 
         /* Free native arrays used to avoid memory leak */
-        paramArray.Dispose();
         emptyArray.Dispose();
         preysPos.Dispose();
+        paramArray.Dispose();
     }
 }
