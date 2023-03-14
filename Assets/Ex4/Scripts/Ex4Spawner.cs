@@ -47,13 +47,13 @@ public class Ex4Spawner : MonoBehaviour
 
         PlantTransforms = new Transform[config.plantCount];
         PlantLifetimes = new Lifetime[config.plantCount];
-        PlantVelocities = new Velocity[config.plantCount];
+        //PlantVelocities = new Velocity[config.plantCount];
         for (var i = 0; i < config.plantCount; i++)
         {
             var go = Create(plantPrefab);
             PlantTransforms[i] = go.transform;
             PlantLifetimes[i] = go.GetComponent<Lifetime>();
-            PlantVelocities[i] = go.GetComponent<Velocity>();
+            //PlantVelocities[i] = go.GetComponent<Velocity>();
         }
 
         PreyTransforms = new Transform[config.preyCount];
