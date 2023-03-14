@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 using UnityEngine.Serialization;
-
+using System.Collections.Generic;//rajout
 public class Grid : MonoBehaviour
 {
     [FormerlySerializedAs("m_ShapePrefab")] [SerializeField]
@@ -13,20 +13,27 @@ public class Grid : MonoBehaviour
 
     private int _width;
     private int _height;
+    public Dictionary<int,float> HPReceived=new();//rajout
+    //public Circle[] circles;//rajout
+
+
 
     // Start is called before the first frame update
     private void Start()
     {
+
         var size = (float)config.nbCircles;
         var ratio = Camera.main!.aspect;
         _height = (int)Math.Round(Math.Sqrt(size / ratio));
         _width = (int)Math.Round(size / _height);
-        
+        //circles=new Circle[_height*_width];//rajout
+
         Colors = new Color[_width, _height];
         var bottomLeftCorner = new Vector3(-_width / 2.0f, -_height / 2.0f, 0);
         var halfHeight = _height / 2f;
         var invWidth = 1f / _width;
         var invHeight = 1f / _height;
+        //var next_id=0;//rajout
 
         for (var i = 0; i < _width; i++)
         {
@@ -39,6 +46,10 @@ public class Grid : MonoBehaviour
                 var shape = Instantiate(shapePrefab, bottomLeftCorner + new Vector3(i, j, 0), Quaternion.identity);
                 shape.GetComponent<Circle>().i = i;
                 shape.GetComponent<Circle>().j = j;
+
+               // HPReceived[next_id]=0;//rajout
+                //shape.GetComponent<Circle>().id = next_id++;//rajout
+                //circles[i*_height+j]=shape.GetComponent<Circle>();//rajout
             }
         }
     }
@@ -57,6 +68,10 @@ public class Grid : MonoBehaviour
             {
                 if (j >= _height - 1) continue;
                 (Colors[i, j], Colors[i, j + 1]) = (Colors[i, j + 1], Colors[i, j]);
+
+                //Circle circle=circles[j*_width+i];//rajout
+                //circle.GetComponent<SpriteRenderer>().color = Colors[i, j] * circle.Health / 1000;//rajout
+
             }
         }
     }

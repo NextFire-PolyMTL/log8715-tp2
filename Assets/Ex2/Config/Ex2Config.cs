@@ -4,5 +4,5 @@ using UnityEngine;
 public class Ex2Config : ScriptableObject
 {
     [SerializeField]
-    public int nbCircles = 400;
+    public int nbCircles = 8000;
 }
