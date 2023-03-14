@@ -1,4 +1,6 @@
 ﻿using UnityEngine;
+using Unity.Collections;
+using Unity.Jobs;
 
 public class ChangePlantLifetime : MonoBehaviour
 {
@@ -11,14 +13,24 @@ public class ChangePlantLifetime : MonoBehaviour
 
     public void Update()
     {
-        _lifetime.decreasingFactor = 1.0f;
-        foreach(var prey in Ex4Spawner.PreyTransforms)
-        {
-            if (Vector3.Distance(prey.position, transform.position) < Ex4Config.TouchingDistance)
-            {
-                _lifetime.decreasingFactor *= 2f;
-                break;
-            }
-        }
+        var emptyArray = new NativeArray<Vector3>(0, Allocator.Persistent);
+        var preysPos = JobHandler.GetPositons(Ex4Spawner.PreyTransforms);
+        var paramArray = _lifetime.ConvertToArray();
+        var job = new JobHandler.LifeChangeJob() {
+            paramArray = paramArray,
+            ownPos = transform.position,
+            acceleratorsPos = preysPos,
+            slowersPos = emptyArray,
+            ownTypePos = emptyArray
+        };
+
+        JobHandle jh = job.Schedule<JobHandler.LifeChangeJob>();
+        jh.Complete();
+        _lifetime.UpdateValues(paramArray);
+
+        /* Free native arrays used to avoid memory leak */
+        paramArray.Dispose();
+        emptyArray.Dispose();
+        preysPos.Dispose();
     }
 }

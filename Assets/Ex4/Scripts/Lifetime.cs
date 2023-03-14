@@ -1,3 +1,4 @@
+using Unity.Collections;
 using UnityEngine;
 
 public class Lifetime : MonoBehaviour
@@ -22,6 +23,22 @@ public class Lifetime : MonoBehaviour
         reproduced = false;
         _startingLifetime = Random.Range(StartingLifetimeLowerBound, StartingLifetimeUpperBound);
         _lifetime = _startingLifetime;
+    }
+
+    /* Stores some attributes in a `NativeArray` of `float` since `IJob`
+     * unfortunately can't take reference to attributes */
+    public NativeArray<float> ConvertToArray() {
+        var array = new NativeArray<float>(2, Allocator.Persistent);
+        array[0] = decreasingFactor;
+        array[1] = (reproduced | alwaysReproduce) ? 1.0f : 0.0f;
+        return array;
+    }
+
+    /* Performs the symetrical operation of `ConvertToArray` by updating
+     * the class attributes with new values after the job got handled */
+    public void UpdateValues(NativeArray<float> paramArray) {
+        decreasingFactor = paramArray[0];
+        reproduced = Mathf.Approximately(paramArray[1], 1.0f);
     }
 
     void Update()

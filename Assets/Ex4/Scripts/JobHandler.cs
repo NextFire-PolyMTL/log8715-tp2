@@ -1,23 +1,63 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using Unity.Collections;
 using Unity.Jobs;
 
+
 public class JobHandler : MonoBehaviour
 {
-    // Start is called before the first frame update
-    struct VelocityJob : IJob
-    {
-        // Jobs declare all data that will be accessed in the job
-        // By declaring it as read only, multiple jobs are allowed to access the data in parallel
-        [ReadOnly]
-        public Vector3 velocity;
+    public static float touchDist = Ex4Config.TouchingDistance;
 
+    /* Transforms an array of `Tranform` into a `NativeArray` of `Vector3`
+     * to be compatible with `IJob` requierments */
+    public static NativeArray<Vector3> GetPositons(Transform[] tList) {
+        int size = tList.Length;
+        var positions = new NativeArray<Vector3>(size, Allocator.Persistent);
+        for (int i = 0; i < size; ++i) {
+            positions[i] = tList[i].position;
+        }
+        return positions;
+    }
+
+    /* Job handling the Lifetime of all entities */
+    public struct LifeChangeJob : IJob {
+        /* An array of parameters, see Lifetime methods for more details*/
+        public NativeArray<float> paramArray;
+        /* The entity position */
+        [ReadOnly] public Vector3 ownPos;
+        /* Positions of the entities that can accelerate the dying process */
+        [ReadOnly] public NativeArray<Vector3> acceleratorsPos;
+        /* Positions of the entities that can slow the dying process down*/
+        [ReadOnly] public NativeArray<Vector3> slowersPos;
+        /* Positions of the of the same type for reproduction purposes */
+        [ReadOnly] public NativeArray<Vector3> ownTypePos;
         // The code actually running on the job
+
         public void Execute()
         {
+            paramArray[0] = 1.0f;
+            foreach (var pos in acceleratorsPos) {
+                if (Vector3.Distance(pos, ownPos) < touchDist) {
+                    paramArray[0] *= 2f;
+                    break;
+                }
+            }
+            foreach (var pos in slowersPos) {
+                if (Vector3.Distance(pos, ownPos) < touchDist) {
+                    paramArray[0] /= 2f;
+                    break;
+                }
+            }
+            /* Float equality safety
+             * Also cuts execution time by checking if the flag is already
+             * activated in for the entity */
+            if (Mathf.Approximately(paramArray[1], 1.0f)) return;
 
+            foreach (var pos in ownTypePos) {
+                if (Vector3.Distance(pos, ownPos) < touchDist) {
+                    paramArray[1] = 1.0f;
+                    break;
+                }
+            }
         }
     }
 
