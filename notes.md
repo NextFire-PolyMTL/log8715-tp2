@@ -43,3 +43,10 @@ Entities
 
 ### <span style="color:red; font-weight:bold">Questions</span>
 - How does the reproduce part doesn't enable a entity to reproduce with itself ??
+
+### Include in report
+- Job handling is the same for all lifetime changers because they are really similar.
+- I use empty array aka `NativeArrays` of size 0 for things that aren't needed since
+  - I can't send a null pointer because a NativeArray can't be a nullpointer.
+  - The foreach loop could have an unexpected behaviour insted of just not looping at all since the array is empty.
+- Usage of the converting methods to arrays, the `NativeArray`s of `Vector3`  because the `Transform`s don't work. Explaination for the parameter aray for class attriutes.
