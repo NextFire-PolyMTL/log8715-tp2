@@ -6,7 +6,7 @@ using UnityEngine;
 public class MovePreyTowardPlant : MonoBehaviour
 {
     private Velocity _velocity;
-    
+
     public void Start()
     {
         _velocity = GetComponent<Velocity>();

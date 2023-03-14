@@ -7,15 +7,15 @@ public class Ex4Spawner : MonoBehaviour
     public static Transform[] PlantTransforms;
     public static Transform[] PreyTransforms;
     public static Transform[] PredatorTransforms;
-    
+
     public static Lifetime[] PlantLifetimes;
     public static Lifetime[] PreyLifetimes;
     public static Lifetime[] PredatorLifetimes;
-    
+
     public static Velocity[] PlantVelocities;
     public static Velocity[] PreyVelocities;
     public static Velocity[] PredatorVelocities;
-    
+
     public Ex4Config config;
     public GameObject predatorPrefab;
     public GameObject preyPrefab;
@@ -23,7 +23,7 @@ public class Ex4Spawner : MonoBehaviour
 
     private int _height;
     private int _width;
-    
+
     public static Ex4Spawner Instance { get; private set; }
 
     public void Respawn(Transform t)
@@ -44,7 +44,7 @@ public class Ex4Spawner : MonoBehaviour
         var ratio = Camera.main!.aspect;
         _height = (int)Math.Round(Math.Sqrt(size / ratio));
         _width = (int)Math.Round(size / _height);
-        
+
         PlantTransforms = new Transform[config.plantCount];
         PlantLifetimes = new Lifetime[config.plantCount];
         PlantVelocities = new Velocity[config.plantCount];
@@ -66,7 +66,7 @@ public class Ex4Spawner : MonoBehaviour
             PreyLifetimes[i] = go.GetComponent<Lifetime>();
             PreyVelocities[i] = go.GetComponent<Velocity>();
         }
-        
+
         PredatorTransforms = new Transform[config.predatorCount];
         PredatorLifetimes = new Lifetime[config.plantCount];
         PredatorVelocities = new Velocity[config.plantCount];

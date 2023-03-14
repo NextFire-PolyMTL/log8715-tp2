@@ -3,7 +3,7 @@
 public class ChangePredatorLifetime : MonoBehaviour
 {
     private Lifetime _lifetime;
-    
+
     public void Start()
     {
         _lifetime = GetComponent<Lifetime>();
@@ -20,7 +20,7 @@ public class ChangePredatorLifetime : MonoBehaviour
                 break;
             }
         }
-        
+
         foreach(var prey in Ex4Spawner.PreyTransforms)
         {
             if (Vector3.Distance(prey.position, transform.position) < Ex4Config.TouchingDistance)

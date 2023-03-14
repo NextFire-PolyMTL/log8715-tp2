@@ -3,7 +3,7 @@
 public class ChangePlantLifetime : MonoBehaviour
 {
     private Lifetime _lifetime;
-    
+
     public void Start()
     {
         _lifetime = GetComponent<Lifetime>();
