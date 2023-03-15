@@ -11,8 +11,8 @@ GameObject:
   - component: {fileID: 6760378060956306890}
   - component: {fileID: 6711532428850162044}
   - component: {fileID: 353294638391137991}
-  - component: {fileID: 169716284186791277}
   - component: {fileID: 3699451821937268892}
+  - component: {fileID: -4207209101843142109}
   m_Layer: 0
   m_Name: Plant
   m_TagString: Untagged
@@ -102,18 +102,6 @@ MonoBehaviour:
   decreasingFactor: 1
   alwaysReproduce: 1
   reproduced: 0
---- !u!114 &169716284186791277
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4733791367640433400}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0ef7526ab0ed80a4cbcd97ed6266c9e1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &3699451821937268892
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -126,3 +114,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cefdd0e4248a4f66983e950c6c99e3d1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &-4207209101843142109
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4733791367640433400}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbd31bdaa06e2444dacaf943ef713d7d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  type: 0

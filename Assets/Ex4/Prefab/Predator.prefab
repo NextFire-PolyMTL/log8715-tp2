@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 8738690973457558257}
   - component: {fileID: 3156690114544926155}
   - component: {fileID: 5612630382383327348}
+  - component: {fileID: 2391430671348651224}
   m_Layer: 0
   m_Name: Predator
   m_TagString: Untagged
@@ -140,3 +141,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: badb7d2dab014c569fe1fd6603ed871e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &2391430671348651224
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4733791367640433400}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbd31bdaa06e2444dacaf943ef713d7d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  type: 2
