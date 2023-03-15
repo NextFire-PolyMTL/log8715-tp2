@@ -28,9 +28,10 @@ public class Lifetime : MonoBehaviour
     /* Stores some attributes in a `NativeArray` of `float` since `IJob`
      * unfortunately can't take reference to attributes */
     public NativeArray<float> ConvertToArray() {
-        var array = new NativeArray<float>(2, Allocator.Persistent);
+        var array = new NativeArray<float>(3, Allocator.Persistent);
         array[0] = decreasingFactor;
         array[1] = (reproduced | alwaysReproduce) ? 1.0f : 0.0f;
+        array[2] = JobHandler.touchDist;
         return array;
     }
 

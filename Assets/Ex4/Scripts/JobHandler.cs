@@ -1,7 +1,7 @@
 using UnityEngine;
 using Unity.Collections;
 using Unity.Jobs;
-
+using Unity.Burst;
 
 public class JobHandler : MonoBehaviour
 {
@@ -19,6 +19,7 @@ public class JobHandler : MonoBehaviour
     }
 
     /* Job handling the Lifetime of all entities */
+    [BurstCompile(CompileSynchronously = true)]
     public struct LifeChangeJob : IJob {
         /* An array of parameters, see Lifetime methods for more details*/
         public NativeArray<float> paramArray;
@@ -36,13 +37,13 @@ public class JobHandler : MonoBehaviour
         {
             paramArray[0] = 1.0f;
             foreach (var pos in acceleratorsPos) {
-                if (Vector3.Distance(pos, ownPos) < touchDist) {
+                if (Vector3.Distance(pos, ownPos) < paramArray[3]) {
                     paramArray[0] *= 2f;
                     break;
                 }
             }
             foreach (var pos in slowersPos) {
-                if (Vector3.Distance(pos, ownPos) < touchDist) {
+                if (Vector3.Distance(pos, ownPos) < paramArray[3]) {
                     paramArray[0] /= 2f;
                     break;
                 }
@@ -53,7 +54,8 @@ public class JobHandler : MonoBehaviour
             if (Mathf.Approximately(paramArray[1], 1.0f)) return;
 
             foreach (var pos in ownTypePos) {
-                if (Vector3.Distance(pos, ownPos) < touchDist) {
+                float dist = Vector3.Distance(pos, ownPos);
+                if (!Mathf.Approximately(dist, 0) && dist < paramArray[2]) {
                     paramArray[1] = 1.0f;
                     break;
                 }
@@ -62,6 +64,7 @@ public class JobHandler : MonoBehaviour
     }
 
     /* Job handling the entities movement */
+    [BurstCompile(CompileSynchronously = true)]
     public struct MoveJob : IJob {
         public NativeArray<Vector3> paramArray;
         /* Either predator or prey speed defined in config*/
