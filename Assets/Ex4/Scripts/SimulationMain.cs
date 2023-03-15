@@ -2,7 +2,7 @@ using System;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-public class Ex4Spawner : MonoBehaviour
+public class SinulationMain : MonoBehaviour
 {
     public static Transform[] PlantTransforms;
     public static Transform[] PreyTransforms;
@@ -24,7 +24,7 @@ public class Ex4Spawner : MonoBehaviour
     private int _height;
     private int _width;
 
-    public static Ex4Spawner Instance { get; private set; }
+    public static SinulationMain Instance { get; private set; }
 
     public void Respawn(Transform t)
     {

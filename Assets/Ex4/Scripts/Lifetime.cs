@@ -50,7 +50,7 @@ public class Lifetime : MonoBehaviour
         if (reproduced || alwaysReproduce)
         {
             Start();
-            Ex4Spawner.Instance.Respawn(transform);
+            SinulationMain.Instance.Respawn(transform);
         }
         else
         {

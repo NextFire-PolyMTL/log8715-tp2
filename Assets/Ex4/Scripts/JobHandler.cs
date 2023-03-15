@@ -37,13 +37,13 @@ public class JobHandler : MonoBehaviour
         {
             paramArray[0] = 1.0f;
             foreach (var pos in acceleratorsPos) {
-                if (Vector3.Distance(pos, ownPos) < paramArray[3]) {
+                if (Vector3.Distance(pos, ownPos) < paramArray[2]) {
                     paramArray[0] *= 2f;
                     break;
                 }
             }
             foreach (var pos in slowersPos) {
-                if (Vector3.Distance(pos, ownPos) < paramArray[3]) {
+                if (Vector3.Distance(pos, ownPos) < paramArray[2]) {
                     paramArray[0] /= 2f;
                     break;
                 }

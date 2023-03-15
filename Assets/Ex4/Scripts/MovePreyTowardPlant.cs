@@ -15,7 +15,7 @@ public class MovePreyTowardPlant : MonoBehaviour
     public void Update()
     {
         /* Local arrays used for Job parameters */
-        var plantsPos = JobHandler.GetPositons(Ex4Spawner.PlantTransforms);
+        var plantsPos = JobHandler.GetPositons(SinulationMain.PlantTransforms);
         var paramArray = _velocity.ConvertToArray();
 
         var job = new JobHandler.MoveJob() {
