@@ -2,11 +2,12 @@ using UnityEngine;
 using Unity.Collections;
 using Unity.Jobs;
 using Unity.Burst;
+/* Interface for other classes that will handle the Jobs calls */
+public interface JobUpdater { void ApplyJob(); }
 
-public class JobHandler : MonoBehaviour
+
+public static class JobHandler
 {
-    public static float touchDist = Ex4Config.TouchingDistance;
-
     /* Transforms an array of `Tranform` into a `NativeArray` of `Vector3`
      * to be compatible with `IJob` requierments */
     public static NativeArray<Vector3> GetPositons(Transform[] tList) {
@@ -32,18 +33,19 @@ public class JobHandler : MonoBehaviour
         /* Positions of the of the same type for reproduction purposes */
         [ReadOnly] public NativeArray<Vector3> ownTypePos;
         // The code actually running on the job
+        [ReadOnly] public float touchDist;
 
         public void Execute()
         {
             paramArray[0] = 1.0f;
             foreach (var pos in acceleratorsPos) {
-                if (Vector3.Distance(pos, ownPos) < paramArray[2]) {
+                if (Vector3.Distance(pos, ownPos) < touchDist) {
                     paramArray[0] *= 2f;
                     break;
                 }
             }
             foreach (var pos in slowersPos) {
-                if (Vector3.Distance(pos, ownPos) < paramArray[2]) {
+                if (Vector3.Distance(pos, ownPos) < touchDist) {
                     paramArray[0] /= 2f;
                     break;
                 }
@@ -55,7 +57,7 @@ public class JobHandler : MonoBehaviour
 
             foreach (var pos in ownTypePos) {
                 float dist = Vector3.Distance(pos, ownPos);
-                if (!Mathf.Approximately(dist, 0) && dist < paramArray[2]) {
+                if (!Mathf.Approximately(dist, 0) && dist < touchDist) {
                     paramArray[1] = 1.0f;
                     break;
                 }
@@ -85,5 +87,17 @@ public class JobHandler : MonoBehaviour
         }
     }
 
+    //TODO : Say smthg about it's heavily inspired form unity doc ?
+    public struct PositionJob : IJobParallelFor {
+        [ReadOnly] public NativeArray<Vector3> velocity;
+
+        public NativeArray<Vector3> position;
+        [ReadOnly] public float deltaTime;
+
+
+        public void Execute(int i) {
+            position[i] += velocity[i] * deltaTime;
+        }
+    }
 
 }

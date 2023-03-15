@@ -15,7 +15,7 @@ public class ChangePlantLifetime : MonoBehaviour
     {
         /* Local arrays used for Job parameters */
         var emptyArray = new NativeArray<Vector3>(0, Allocator.Persistent);
-        var preysPos = JobHandler.GetPositons(SinulationMain.PreyTransforms);
+        var preysPos = JobHandler.GetPositons(SimulationMain.PreyTransforms);
         var paramArray = _lifetime.ConvertToArray();
 
         var job = new JobHandler.LifeChangeJob() {

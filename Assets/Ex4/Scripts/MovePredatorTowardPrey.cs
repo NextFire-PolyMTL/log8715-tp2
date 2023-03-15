@@ -15,7 +15,7 @@ public class MovePredatorTowardPrey : MonoBehaviour
     public void Update()
     {
         /* Local arrays used for Job parameters */
-        var preysPos = JobHandler.GetPositons(SinulationMain.PreyTransforms);
+        var preysPos = JobHandler.GetPositons(SimulationMain.PreyTransforms);
         var paramArray = _velocity.ConvertToArray();
 
         var job = new JobHandler.MoveJob() {

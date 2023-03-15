@@ -10,7 +10,7 @@ public enum EntityType {
 }
 public class Entity : MonoBehaviour
 {
-    [SerializeField] EntityType type;
+    [SerializeField] public EntityType type;
     private Lifetime _lifetime;
 
     void Awake()

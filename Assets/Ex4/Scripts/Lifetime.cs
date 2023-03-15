@@ -1,10 +1,15 @@
 using Unity.Collections;
 using UnityEngine;
+public struct LTParams {
+    float decTime;
+    bool repr;
+}
 
 public class Lifetime : MonoBehaviour
 {
     private const float StartingLifetimeLowerBound = 5;
     private const float StartingLifetimeUpperBound = 15;
+    public NativeArray<float> paramsArray;
 
     public float decreasingFactor = 1;
     public bool alwaysReproduce;
@@ -20,18 +25,19 @@ public class Lifetime : MonoBehaviour
 
     void Start()
     {
+        alwaysReproduce = (GetComponent<Entity>().type == EntityType.ETT_PLNT);
         reproduced = false;
         _startingLifetime = Random.Range(StartingLifetimeLowerBound, StartingLifetimeUpperBound);
         _lifetime = _startingLifetime;
+        paramsArray = new NativeArray<float>(2, Allocator.Persistent);
     }
 
     /* Stores some attributes in a `NativeArray` of `float` since `IJob`
      * unfortunately can't take reference to attributes */
     public NativeArray<float> ConvertToArray() {
-        var array = new NativeArray<float>(3, Allocator.Persistent);
+        var array = new NativeArray<float>(2, Allocator.Persistent);
         array[0] = decreasingFactor;
         array[1] = (reproduced | alwaysReproduce) ? 1.0f : 0.0f;
-        array[2] = JobHandler.touchDist;
         return array;
     }
 
@@ -50,7 +56,7 @@ public class Lifetime : MonoBehaviour
         if (reproduced || alwaysReproduce)
         {
             Start();
-            SinulationMain.Instance.Respawn(transform);
+            SimulationMain.Instance.Respawn(transform);
         }
         else
         {
