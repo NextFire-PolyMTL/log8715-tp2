@@ -43,7 +43,10 @@ Entities
 
 ### <span style="color:red; font-weight:bold">Questions</span>
 - How does the reproduce part doesn't enable a entity to reproduce with itself ??
-- Is the vector this really unavoidable, does putting getters/setters work if then we put `class.attribute` in the job handler (test first to see if it breaks before asking maybe)
+  - Same question for the readonly accesses etc...
+- Is the vector this really unavoidable, does putting getters/setters work if then we put `class.attribute` in the job handler (~~test first to see if it breaks before asking maybe~~) Tested, doesn't work, at least doesn't seem to pass reference.
+- What are the limits of modification? Like change prefabs, components, ... as long as the config still works.
+- `TransformAccessArray` -> Seems ok?? But having a `NativeArray<Vector3>` = way better imo, can we setup some kind of reference
 
 ### Include in report
 - Job handling is the same for all lifetime changers because they are really similar.
