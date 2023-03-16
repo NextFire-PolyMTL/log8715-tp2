@@ -1,17 +1,11 @@
 using Unity.Collections;
 using UnityEngine;
 
-public class LifeTimeUpdate : MonoBehaviour, JobUpdater
+public class LifeTimeUpdate //: JobUpdater
 {
-    private Lifetime _lifetime;
-    public static NativeArray<Vector3> emptyArray;
+    public static NativeArray<Vector3> emptyArray = new NativeArray<Vector3>(0, Allocator.Persistent);
 
-    void Start() {
-        emptyArray = new NativeArray<Vector3>(0, Allocator.Persistent);
-        _lifetime = GetComponent<Lifetime>();
-    }
-
-    public void ApplyJob()
+    public static void ApplyJob()
     {
 
     }

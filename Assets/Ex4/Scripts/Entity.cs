@@ -22,7 +22,7 @@ public class Entity : MonoBehaviour
 
     void Update()
     {
-        if (type == EntityType.ETT_PLNT)
+        //if (type == EntityType.ETT_PLNT)
             transform.localScale = Vector3.one * _lifetime.GetProgression();
     }
 }

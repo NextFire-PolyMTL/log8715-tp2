@@ -11,9 +11,6 @@ GameObject:
   - component: {fileID: 6760378060956306890}
   - component: {fileID: 6711532428850162044}
   - component: {fileID: 7600524296399067446}
-  - component: {fileID: 8042163139838660598}
-  - component: {fileID: 2509672903002879383}
-  - component: {fileID: 6450140498702383979}
   - component: {fileID: 1826094369095468199}
   m_Layer: 0
   m_Name: Prey
@@ -104,43 +101,6 @@ MonoBehaviour:
   decreasingFactor: 1
   alwaysReproduce: 0
   reproduced: 0
---- !u!114 &8042163139838660598
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4733791367640433400}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6c511d46e06bc8b418e44402ab252ecd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  velocity: {x: 0, y: 0, z: 0}
---- !u!114 &2509672903002879383
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4733791367640433400}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fb580ccee88c447ea302628174e8c9e1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &6450140498702383979
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4733791367640433400}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ae1143a5dd004d94c9511fdb87d835c0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &1826094369095468199
 MonoBehaviour:
   m_ObjectHideFlags: 0
