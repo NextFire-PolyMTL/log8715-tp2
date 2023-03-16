@@ -12,4 +12,3 @@ public class Ex4Config : ScriptableObject
     public static readonly float PredatorSpeed = 0.5f;
     public static readonly float TouchingDistance = 0.5f;
 }
-
