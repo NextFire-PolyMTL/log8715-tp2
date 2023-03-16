@@ -12,4 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 44f6298b63162af49b161af8f69d4513, type: 3}
   m_Name: Ex3Config
   m_EditorClassIdentifier: 
-  numberOfShapesToSpawn: 200
+  numberOfShapesToSpawn: 1000

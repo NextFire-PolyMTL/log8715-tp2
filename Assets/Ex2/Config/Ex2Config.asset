@@ -12,4 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2954972c838d4ad48960690fef8dd954, type: 3}
   m_Name: Ex2Config
   m_EditorClassIdentifier: 
-  nbCircles: 400
+  nbCircles: 8000
