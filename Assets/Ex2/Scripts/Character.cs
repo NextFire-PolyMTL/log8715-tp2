@@ -31,7 +31,7 @@ public class Character : MonoBehaviour
         }
         var nearbyCircles = nearbyCirclesList.ToArray();
 
-        DamageNearbyShapes(nearbyCircles);
+        DamageNearbyCircles(nearbyCircles);
         UpdateAcceleration(nearbyCircles);
     }
 
@@ -55,7 +55,7 @@ public class Character : MonoBehaviour
         _acceleration = direction.normalized * AccelerationMagnitude;
     }
 
-    private void DamageNearbyShapes(Circle[] nearbyCircles)
+    private void DamageNearbyCircles(Circle[] nearbyCircles)
     {
         // Si aucun cercle proche, on retourne a (0,0,0)
         if (nearbyCircles.Length == 0)

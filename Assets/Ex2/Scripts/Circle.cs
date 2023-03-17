@@ -49,7 +49,7 @@ public class Circle : MonoBehaviour
     private void Update()
     {
         UpdateColor();
-        HealNearbyShapes();
+        HealNearbyCircles();
     }
 
     private void UpdateColor()
@@ -57,7 +57,7 @@ public class Circle : MonoBehaviour
         _spriteRenderer.color = _grid.Colors[i, j] * _health / BaseHealth;
     }
 
-    private void HealNearbyShapes()
+    private void HealNearbyCircles()
     {
         float hpReceived = HealingPerSecond * Time.deltaTime;
         foreach (var circle in _nearbyCircles)
