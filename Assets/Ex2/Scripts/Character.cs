@@ -1,7 +1,4 @@
 using UnityEngine;
-using System;//rajout
-using System.Collections.Generic;//rajout
-
 
 public class Character : MonoBehaviour
 {
@@ -16,38 +13,12 @@ public class Character : MonoBehaviour
     private const float DamagePerSecond = 50;
 
     private const float DamageRange = 10;
-    private int _height;//
-    private int _width;//
-    private Grid grid;//
-    public Circle[] circles;
 
-
-    private void start()
-    {
-        Grid grid = GameObject.FindObjectOfType<Grid>();
-        //Circle[] circles = grid.circles;
-        _height = grid.getHeight();
-        _width = grid.getWidth();
-    }
     private void Update()
     {
         Move();
-
-        var nearbyColliders = Physics2D.OverlapCircleAll(transform.position, DamageRange); //changement
-        Circle[] nearbyCircles = new Circle[nearbyColliders.Length];
-        for (var i = 0; i < nearbyColliders.Length; i++)
-        {
-            var nearbyCollider = nearbyColliders[i];
-            if (nearbyCollider != null && nearbyCollider.TryGetComponent<Circle>(out var circle))//utiliser tag que j'ai créé plutôt ?
-            {
-                nearbyCircles[i] = circle;
-            }
-        }
-
-        //Circle[] nearbyCircles = getCircles();
-
-        DamageNearbyShapes(nearbyCircles);
-        UpdateAcceleration(nearbyCircles);
+        DamageNearbyShapes();
+        UpdateAcceleration();
     }
 
     private void Move()
@@ -60,81 +31,36 @@ public class Character : MonoBehaviour
         transform.position += _velocity * Time.deltaTime;
     }
 
-    private void UpdateAcceleration(Circle[] nearbyCircles)
+    private void UpdateAcceleration()
     {
         var direction = Vector3.zero;
-        //var nearbyColliders = Physics2D.OverlapCircleAll(transform.position, DamageRange);
-        /*
+        var nearbyColliders = Physics2D.OverlapCircleAll(transform.position, DamageRange);
         foreach (var nearbyCollider in nearbyColliders)
         {
-            if (nearbyCollider.TryGetComponent<Circle>(out var circle)) //utiliser tag que j'ai créé plutôt ?
+            if (nearbyCollider.TryGetComponent<Circle>(out var circle))
             {
                 direction += (circle.transform.position - transform.position) * circle.Health;
             }
         }
-        */
-        /*
-        foreach(var nearbyCollider in nearbyColliders)
-        {
-            if (nearbyCollider.TryGetComponent<Circle>(out var circle))//utiliser tag que j'ai créé plutôt ?
-            {
-                circle.ReceiveHp(-DamagePerSecond * Time.deltaTime);
-            }
-        }
-        */
-        foreach (var circle in nearbyCircles)
-        {
-            direction += (circle.transform.position - transform.position) * circle.Health;
-        }
         _acceleration = direction.normalized * AccelerationMagnitude;
     }
 
-    private void DamageNearbyShapes(Circle[] nearbyCircles)
+    private void DamageNearbyShapes()
     {
-        //var nearbyColliders = Physics2D.OverlapCircleAll(transform.position, DamageRange);
+        var nearbyColliders = Physics2D.OverlapCircleAll(transform.position, DamageRange);
 
         // Si aucun cercle proche, on retourne a (0,0,0)
-        if (nearbyCircles.Length == 0)
+        if (nearbyColliders.Length == 0)
         {
             transform.position = Vector3.zero;
         }
 
-        foreach (var circle in nearbyCircles)
+        foreach(var nearbyCollider in nearbyColliders)
         {
-            circle.ReceiveHp(-DamagePerSecond * Time.deltaTime);
-
-        }
-    }
-
-    /*
-    private Circle[] getCircles()
-    {
-        List<Circle> targets = new List<Circle>();
-        //Circle[] circles = grid.circles;
-
-        for (var j = 0; j < _height; j++)
-        {
-            for (var i = 0; i < _width; i++)
+            if (nearbyCollider.TryGetComponent<Circle>(out var circle))
             {
-
-                if (Math.Sqrt(Math.Pow((i - _width / 2) - transform.position.x, 2) + Math.Pow((j - j / _height) - transform.position.y, 2)) <= DamageRange)
-                {
-                    targets.Add(circles[j * _width + i]);
-                }
-
-            }
-
-        }
-        
-        foreach (Circle circle in circles)
-        {
-            if (Math.Sqrt(Math.Pow(circle.transform.position.x - transform.position.x, 2) + Math.Pow(circle.transform.position.y - transform.position.y, 2)) <= DamageRange)
-            {
-                targets.Add(circle);
+                circle.ReceiveHp(-DamagePerSecond * Time.deltaTime);
             }
         }
-
-        return targets.ToArray();
     }
-    */
 }
