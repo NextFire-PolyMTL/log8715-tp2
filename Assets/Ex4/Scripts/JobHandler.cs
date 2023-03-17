@@ -8,86 +8,82 @@ public interface JobUpdater { void ApplyJob(); }
 
 public static class JobHandler
 {
-    /* Transforms an array of `Tranform` into a `NativeArray` of `Vector3`
-     * to be compatible with `IJob` requierments */
-    public static NativeArray<Vector3> GetPositons(Transform[] tList) {
-        int size = tList.Length;
-        var positions = new NativeArray<Vector3>(size, Allocator.Persistent);
-        for (int i = 0; i < size; ++i) {
-            positions[i] = tList[i].position;
-        }
-        return positions;
-    }
-
-    /* Job handling the Lifetime of all entities */
+    /* Job Handling the update of all lifetime entities */
     [BurstCompile(CompileSynchronously = true)]
-    public struct LifeChangeJob : IJob {
-        /* An array of parameters, see Lifetime methods for more details*/
-        public NativeArray<float> paramArray;
+    public struct LifeTimeJob : IJobParallelFor {
         /* The entity position */
-        [ReadOnly] public Vector3 ownPos;
+        [ReadOnly] public NativeArray<Vector3> ownPos;
         /* Positions of the entities that can accelerate the dying process */
-        [ReadOnly] public NativeArray<Vector3> acceleratorsPos;
+        [ReadOnly] public NativeArray<Vector3> accPos;
         /* Positions of the entities that can slow the dying process down*/
-        [ReadOnly] public NativeArray<Vector3> slowersPos;
+        [ReadOnly] public NativeArray<Vector3> slowPos;
         /* Positions of the of the same type for reproduction purposes */
         [ReadOnly] public NativeArray<Vector3> ownTypePos;
-        // The code actually running on the job
+        /* An array of parameters, see Lifetime methods for more details*/
+        public NativeArray<LTParams> paramArray;
+        /* The touching distance defined on the config*/
         [ReadOnly] public float touchDist;
 
-        public void Execute()
-        {
-            paramArray[0] = 1.0f;
-            foreach (var pos in acceleratorsPos) {
-                if (Vector3.Distance(pos, ownPos) < touchDist) {
-                    paramArray[0] *= 2f;
+        public void Execute(int i) {
+            var newParams = paramArray[i];
+            newParams.decrFactor = 1.0f;
+            /* Checking contact with enemies*/
+            foreach (var pos in accPos) {
+                if (Vector3.Distance(pos, ownPos[i]) < touchDist) {
+                    newParams.decrFactor *= 2f;
                     break;
                 }
             }
-            foreach (var pos in slowersPos) {
-                if (Vector3.Distance(pos, ownPos) < touchDist) {
-                    paramArray[0] /= 2f;
+            /* Checking contact with food */
+            foreach (var pos in slowPos) {
+                if (Vector3.Distance(pos, ownPos[i]) < touchDist) {
+                    newParams.decrFactor /= 2f;
                     break;
                 }
             }
-            /* Float equality safety
-             * Also cuts execution time by checking if the flag is already
-             * activated in for the entity */
-            if (Mathf.Approximately(paramArray[1], 1.0f)) return;
-
-            foreach (var pos in ownTypePos) {
-                float dist = Vector3.Distance(pos, ownPos);
-                if (!Mathf.Approximately(dist, 0) && dist < touchDist) {
-                    paramArray[1] = 1.0f;
+            /* Skips check if the reproduce flag is already activated since
+             * it cannot be toggled off */
+            if (newParams.reproduceFlag) {
+                paramArray[i] = newParams;
+                return;
+            }
+            /* Checking reproduce flag with own species while being sure the
+             * entity doesn't reproduce with itself */
+            foreach(var pos in ownTypePos) {
+                float dist = Vector3.Distance(pos, ownPos[i]);
+                if (!Mathf.Approximately(dist, 0f) && dist < touchDist) {
+                    newParams.reproduceFlag = true;
                     break;
                 }
             }
+            paramArray[i] = newParams;
         }
     }
 
-    /* Job handling the entities movement */
+    /* Job handling the chasing behaviour of preys and predators */
     [BurstCompile(CompileSynchronously = true)]
-    public struct MoveJob : IJob {
-        public NativeArray<Vector3> paramArray;
-        /* Either predator or prey speed defined in config*/
-        [ReadOnly] public float referenceSpeed;
-        [ReadOnly] public Vector3 ownPos;
+    public struct ChaseJob : IJobParallelFor {
+        public NativeArray<Vector3> ownVel;
+        [ReadOnly] public NativeArray<Vector3> ownPos;
         [ReadOnly] public NativeArray<Vector3> chasedPos;
-        public void Execute() {
-            var closestDist = float.MaxValue;
-            var closestPos = ownPos;
+        [ReadOnly] public float refSpeed;
+
+        public void Execute(int i) {
+            float closestDist = float.MaxValue;
+            Vector3 closestPos = ownPos[i];
             foreach (var pos in chasedPos) {
-                var dist = Vector3.Distance(pos, ownPos);
+                var dist = Vector3.Distance(pos, ownPos[i]);
                 if (dist < closestDist) {
                     closestDist = dist;
                     closestPos = pos;
                 }
             }
-            paramArray[0] = (closestPos - ownPos) * referenceSpeed;
+            ownVel[i] = (closestPos - ownPos[i]) * refSpeed;
         }
     }
 
     //TODO : Say smthg about it's heavily inspired form unity doc ?
+    [BurstCompile(CompileSynchronously = true)]
     public struct PositionJob : IJobParallelFor {
         [ReadOnly] public NativeArray<Vector3> velocity;
 

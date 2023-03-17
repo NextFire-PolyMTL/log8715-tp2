@@ -3,7 +3,11 @@ guid: 2bf157781c78a0e43b202d7291a5e2da
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - config: {fileID: 11400000, guid: 986766f3a8e27bf429443b800a420fae, type: 2}
+  - predatorPrefab: {fileID: 4733791367640433400, guid: 28ee0527675d94f4bbe5a281a126b211, type: 3}
+  - preyPrefab: {fileID: 4733791367640433400, guid: 1fc1269079654d24e912f7c1c5daedea, type: 3}
+  - plantPrefab: {fileID: 4733791367640433400, guid: f0b2403363ab8c54989107990cf6b270, type: 3}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

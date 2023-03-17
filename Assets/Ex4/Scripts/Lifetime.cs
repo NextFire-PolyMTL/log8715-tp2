@@ -1,8 +1,8 @@
 using Unity.Collections;
 using UnityEngine;
 public struct LTParams {
-    float decTime;
-    bool repr;
+    public float decrFactor {get; set;}
+    public bool reproduceFlag;
 }
 
 public class Lifetime : MonoBehaviour
@@ -27,6 +27,19 @@ public class Lifetime : MonoBehaviour
         _lifetime = _startingLifetime;
     }
 
+    public void UpdateFromLTParams(LTParams newParams) {
+        decreasingFactor = newParams.decrFactor;
+        if (!alwaysReproduce)
+            reproduced = newParams.reproduceFlag;
+    }
+
+    public LTParams exportLTParams() {
+        var newParams = new LTParams() {
+            decrFactor = decreasingFactor,
+            reproduceFlag =  alwaysReproduce || reproduced
+        };
+        return newParams;
+    }
 
     void Update()
     {

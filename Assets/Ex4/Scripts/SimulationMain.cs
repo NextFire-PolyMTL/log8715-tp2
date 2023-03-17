@@ -16,7 +16,7 @@ public class SimulationMain : MonoBehaviour
 
     public Ex4Config config;
     public GameObject predatorPrefab, preyPrefab, plantPrefab;
-
+    private int plantCount, preyCount, predCount;
     private int _height;
     private int _width;
 
@@ -42,40 +42,94 @@ public class SimulationMain : MonoBehaviour
         _height = (int)Math.Round(Math.Sqrt(size / ratio));
         _width = (int)Math.Round(size / _height);
 
+        plantCount = config.plantCount;
+        preyCount = config.preyCount;
+        predCount = config.predatorCount;
+
+
         /* Plants init */
-        PlantTransforms = new Transform[config.plantCount];
-        PlantPos = new NativeArray<Vector3>(config.plantCount, Allocator.Persistent);
-        PlantLifetimes = new Lifetime[config.plantCount];
-        for (var i = 0; i < config.plantCount; i++)
+        PlantTransforms = new Transform[plantCount];
+        PlantPos = new NativeArray<Vector3>(plantCount, Allocator.Persistent);
+        PlantLifetimes = new Lifetime[plantCount];
+        PlantLTParams = new NativeArray<LTParams>(plantCount, Allocator.Persistent);
+        for (var i = 0; i < plantCount; i++)
         {
             var go = Create(plantPrefab);
             PlantTransforms[i] = go.transform;
             PlantLifetimes[i] = go.GetComponent<Lifetime>();
+            PlantPos[i] = PlantTransforms[i].position;
         }
 
-        PreyTransforms = new Transform[config.preyCount];
-        PreyLifetimes = new Lifetime[config.plantCount];
-        PreyVel = new NativeArray<Vector3>(config.preyCount, Allocator.Persistent);
-        for (var i = 0; i < config.preyCount; i++)
+        PreyTransforms = new Transform[preyCount];
+        PreyPos = new NativeArray<Vector3>(preyCount, Allocator.Persistent);
+        PreyLifetimes = new Lifetime[preyCount];
+        PreyVel = new NativeArray<Vector3>(preyCount, Allocator.Persistent);
+        PreyLTParams = new NativeArray<LTParams>(preyCount, Allocator.Persistent);
+        for (var i = 0; i < preyCount; i++)
         {
             var go = Create(preyPrefab);
             PreyTransforms[i] = go.transform;
             PreyLifetimes[i] = go.GetComponent<Lifetime>();
+            PreyPos[i] = PreyTransforms[i].position;
         }
 
-        PredatorTransforms = new Transform[config.predatorCount];
-        PredatorLifetimes = new Lifetime[config.plantCount];
-        PredVel = new NativeArray<Vector3>(config.predatorCount, Allocator.Persistent);
-        for (var i = 0; i < config.predatorCount; i++)
+        PredatorTransforms = new Transform[predCount];
+        PredPos = new NativeArray<Vector3>(predCount, Allocator.Persistent);
+        PredatorLifetimes = new Lifetime[predCount];
+        PredVel = new NativeArray<Vector3>(predCount, Allocator.Persistent);
+        PredLTParams = new NativeArray<LTParams>(predCount, Allocator.Persistent);
+        for (var i = 0; i < predCount; i++)
         {
             var go = Create(predatorPrefab);
             PredatorTransforms[i] = go.transform;
             PredatorLifetimes[i] = go.GetComponent<Lifetime>();
+            PredPos[i] = PredatorTransforms[i].position;
         }
     }
 
-    void Update() {
+    void GetPos() {
+        for (int i = 0; i < plantCount; ++i)
+            PlantPos[i] = PlantTransforms[i].position;
+        for (int i = 0; i < preyCount; ++i)
+            PreyPos[i] = PreyTransforms[i].position;
+        for (int i = 0; i < predCount; ++i)
+            PredPos[i] = PredatorTransforms[i].position;
+    }
 
+    void GetLTParams() {
+        for (int i = 0; i < plantCount; ++i)
+            PlantLTParams[i] = PlantLifetimes[i].exportLTParams();
+        for (int i = 0; i < preyCount; ++i)
+            PreyLTParams[i] = PreyLifetimes[i].exportLTParams();
+        for (int i = 0; i < predCount; ++i)
+            PredLTParams[i] = PredatorLifetimes[i].exportLTParams();
+    }
+    void UpdateTransforms() {
+        for (int i = 0; i < plantCount; ++i)
+            PlantTransforms[i].position = PlantPos[i];
+        for (int i = 0; i < preyCount; ++i)
+            PreyTransforms[i].position = PreyPos[i];
+        for (int i = 0; i < predCount; ++i)
+            PredatorTransforms[i].position = PredPos[i];
+    }
+
+    void UpdateLifetimes() {
+        for (int i = 0; i < plantCount; ++i)
+            PlantLifetimes[i].UpdateFromLTParams(PlantLTParams[i]);
+        for (int i = 0; i < preyCount; ++i)
+            PreyLifetimes[i].UpdateFromLTParams(PreyLTParams[i]);
+        for (int i = 0; i < predCount; ++i)
+            PredatorLifetimes[i].UpdateFromLTParams(PredLTParams[i]);
+    }
+
+    void Update() {
+        GetPos();
+        GetLTParams();
+        LifeTimeUpdate.ApplyJob();
+        ChasingUpdate.ApplyJob();
+        PositionUpdate.ApplyJob();
+        UpdateTransforms();
+        UpdateLifetimes();
     }
 
     private GameObject Create(GameObject prefab)

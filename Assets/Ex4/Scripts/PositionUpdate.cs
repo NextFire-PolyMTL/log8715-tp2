@@ -4,23 +4,29 @@ using Unity.Jobs;
 using UnityEngine;
 using static JobHandler;
 
-public class PositionUpdate : MonoBehaviour, JobUpdater
+public class PositionUpdate
 {
-    public void ApplyJob()
+    public static void ApplyJob()
     {
-        PositionJob preyJob = new PositionJob() {
+        int preyCount = SimulationMain.PreyPos.Length;
+        int predCount = SimulationMain.PredPos.Length;
+
+        var preyJob = new PositionJob() {
             velocity = SimulationMain.PreyVel,
             position = SimulationMain.PreyPos,
             deltaTime = Time.deltaTime
         };
-        PositionJob predJob = new PositionJob() {
+
+        var predJob = new PositionJob() {
             velocity = SimulationMain.PredVel,
             position = SimulationMain.PredPos,
             deltaTime = Time.deltaTime
         };
-        JobHandle jh1 = preyJob.Schedule(SimulationMain.PreyPos.Length, 64);
-        JobHandle jh2 = predJob.Schedule(SimulationMain.PredPos.Length, 64);
-        jh1.Complete();
-        jh2.Complete();
+
+        JobHandle preyJH = preyJob.Schedule(preyCount, 64);
+        JobHandle predJH = predJob.Schedule(predCount, 64);
+
+        preyJH.Complete();
+        predJH.Complete();
     }
 }
