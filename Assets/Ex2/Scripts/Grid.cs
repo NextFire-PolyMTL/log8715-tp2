@@ -4,7 +4,8 @@ using UnityEngine.Serialization;
 
 public class Grid : MonoBehaviour
 {
-    [FormerlySerializedAs("m_ShapePrefab")] [SerializeField]
+    [FormerlySerializedAs("m_ShapePrefab")]
+    [SerializeField]
     private GameObject shapePrefab;
 
     public Ex2Config config;
@@ -21,7 +22,7 @@ public class Grid : MonoBehaviour
         var ratio = Camera.main!.aspect;
         _height = (int)Math.Round(Math.Sqrt(size / ratio));
         _width = (int)Math.Round(size / _height);
-        
+
         Colors = new Color[_width, _height];
         var bottomLeftCorner = new Vector3(-_width / 2.0f, -_height / 2.0f, 0);
         var halfHeight = _height / 2f;

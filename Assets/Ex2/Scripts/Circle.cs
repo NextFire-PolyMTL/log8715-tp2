@@ -1,25 +1,48 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Serialization;
 
 public class Circle : MonoBehaviour
 {
-    [FormerlySerializedAs("I")] [HideInInspector]
+    [FormerlySerializedAs("I")]
+    [HideInInspector]
     public int i;
 
-    [FormerlySerializedAs("J")] [HideInInspector]
+    [FormerlySerializedAs("J")]
+    [HideInInspector]
     public int j;
 
-    public float Health { get; private set; }
+    private float _health;
+    public float Health { get => _health; }
 
     private const float BaseHealth = 1000;
 
     private const float HealingPerSecond = 1;
     private const float HealingRange = 3;
 
+    private Grid _grid;
+    private SpriteRenderer _spriteRenderer;
+    private Circle[] _nearbyCircles;
+
     // Start is called before the first frame update
     private void Start()
     {
-        Health = BaseHealth;
+        _health = BaseHealth;
+
+        _grid = GameObject.FindObjectOfType<Grid>();
+        _spriteRenderer = gameObject.GetComponent<SpriteRenderer>();
+
+        var nearbyColliders = Physics2D.OverlapCircleAll(transform.position, HealingRange);
+        var nearbyCirclesList = new List<Circle>();
+        for (var i = 0; i < nearbyColliders.Length; i++)
+        {
+            var nearbyCollider = nearbyColliders[i];
+            if (nearbyCollider != null && nearbyCollider.TryGetComponent<Circle>(out var circle))
+            {
+                nearbyCirclesList.Add(circle);
+            }
+        }
+        _nearbyCircles = nearbyCirclesList.ToArray();
     }
 
     // Update is called once per frame
@@ -31,26 +54,20 @@ public class Circle : MonoBehaviour
 
     private void UpdateColor()
     {
-        var grid = GameObject.FindObjectOfType<Grid>();
-        var spriteRenderer = gameObject.GetComponent<SpriteRenderer>();
-        spriteRenderer.color = grid.Colors[i, j] * Health / BaseHealth;
+        _spriteRenderer.color = _grid.Colors[i, j] * _health / BaseHealth;
     }
 
     private void HealNearbyShapes()
     {
-        var nearbyColliders = Physics2D.OverlapCircleAll(transform.position, HealingRange);
-        foreach (var nearbyCollider in nearbyColliders)
+        float hpReceived = HealingPerSecond * Time.deltaTime;
+        foreach (var circle in _nearbyCircles)
         {
-            if (nearbyCollider != null && nearbyCollider.TryGetComponent<Circle>(out var circle))
-            {
-                circle.ReceiveHp(HealingPerSecond * Time.deltaTime);
-            }
+            circle.ReceiveHp(hpReceived);
         }
     }
 
     public void ReceiveHp(float hpReceived)
     {
-        Health += hpReceived;
-        Health = Mathf.Clamp(Health, 0, BaseHealth);
+        _health = Mathf.Clamp(_health + hpReceived, 0, BaseHealth);
     }
 }
