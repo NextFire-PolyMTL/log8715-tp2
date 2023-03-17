@@ -25,7 +25,7 @@ public class Circle : MonoBehaviour
     {
         Health = BaseHealth;
         grid = GameObject.FindObjectOfType<Grid>();//rajout
-        neighboursCircleCollider=Physics2D.OverlapCircleAll(transform.position, HealingRange);//là je considère que les voisins de changent jamais...
+        neighboursCircleCollider=Physics2D.OverlapCircleAll(transform.position, HealingRange);//là je considère que les voisins ne changent jamais...
         int nb_circles=neighboursCircleCollider.Length;//rajout
         neighboursCircle=new Circle[nb_circles];//rajout
         Collider2D nearbyCollider;//rajout
@@ -43,12 +43,14 @@ public class Circle : MonoBehaviour
     }
 
     // Update is called once per frame
+
     private void Update()
     {
         //ReceiveHp(grid.HPReceived[id]);
         UpdateColor();
         HealNearbyShapes();
     }
+    
 
     private void UpdateColor()
     {
@@ -87,5 +89,22 @@ public class Circle : MonoBehaviour
     {
         Health += hpReceived;
         Health = Mathf.Clamp(Health, 0, BaseHealth);
+    }
+    public void ReceiveHp2(float hpReceived)
+    {
+        Health += hpReceived;
+        Health = Mathf.Clamp(Health, 0, BaseHealth);
+
+
+    }
+    public float getHealingRange(){
+        return HealingRange;
+    }
+
+    public float getHealingPerSecond(){
+        return HealingPerSecond;
+    }
+    public float getBaseHeath(){
+        return BaseHealth;
     }
 }
