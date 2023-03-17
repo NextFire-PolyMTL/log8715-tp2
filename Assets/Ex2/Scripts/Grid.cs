@@ -54,10 +54,15 @@ public class Grid : MonoBehaviour
 
                 // HPReceived[next_id]=0;//rajout
                 //shape.GetComponent<Circle>().id = next_id++;//rajout
-                //circles[i * _height + j] = shape.GetComponent<Circle>();//rajout
+                circles[i * _height + j] = shape.GetComponent<Circle>();//rajout
                 //Health[i,j]=circles[i * _height + j].Health;
                 //spriteRenderers[i * _height + j]=circles[i * _height + j].GetComponent<SpriteRenderer>();
             }
+        }
+        foreach (Character chara in GameObject.FindObjectsOfType<Character>()){
+            chara._width=_width;
+            chara._height=_height;
+            chara.grid=this;
         }
     }
 
