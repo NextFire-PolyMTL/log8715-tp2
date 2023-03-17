@@ -12,12 +12,13 @@ public class LifeTimeUpdate
         int plantCount = SimulationMain.PlantPos.Length;
         int preyCount = SimulationMain.PreyPos.Length;
         int predCount = SimulationMain.PredPos.Length;
+        var emptyArray =  new NativeArray<Vector3>(0, Allocator.TempJob);
 
         var jobPlant = new LifeTimeJob() {
             ownPos = SimulationMain.PlantPos,
             accPos = SimulationMain.PreyPos,
-            slowPos = new NativeArray<Vector3>(0, Allocator.TempJob),
-            ownTypePos = new NativeArray<Vector3>(0, Allocator.TempJob),
+            slowPos = emptyArray,
+            ownTypePos = emptyArray,
             paramArray = SimulationMain.PlantLTParams,
             touchDist = Ex4Config.TouchingDistance
         };
@@ -31,7 +32,7 @@ public class LifeTimeUpdate
         };
         var jobPred = new LifeTimeJob() {
             ownPos = SimulationMain.PredPos,
-            accPos = new NativeArray<Vector3>(0, Allocator.TempJob),
+            accPos = emptyArray,
             slowPos = SimulationMain.PreyPos,
             ownTypePos = SimulationMain.PredPos,
             paramArray = SimulationMain.PredLTParams,
@@ -45,5 +46,7 @@ public class LifeTimeUpdate
         JobHandlerPlant.Complete();
         JobHandlerPrey.Complete();
         JobHandlerPred.Complete();
+
+        emptyArray.Dispose();
     }
 }
