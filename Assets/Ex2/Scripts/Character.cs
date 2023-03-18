@@ -19,7 +19,13 @@ public class Character : MonoBehaviour
     {
         Move();
 
+        /*Les deux fonction DamageNearbyCircles et UpdateAcceleration utilise toute deux le même voisinage
+        On le détermine donc en amont.*/
         var nearbyColliders = Physics2D.OverlapCircleAll(transform.position, DamageRange);
+        //On récupère directemment les cercle à partir des colliders prélevé juste au dessus.
+        /*Dans le cas où un de ces colliders ne serait pas attaché à un gameObject avec une composant Circle,
+        nous avons prévéré utiliser une liste que l'on transforme ensuite en array pour une plus grande performance
+        du fait d'un accès contigu des valeurs en mémoire.*/
         var nearbyCirclesList = new List<Circle>();
         for (var i = 0; i < nearbyColliders.Length; i++)
         {
@@ -63,6 +69,7 @@ public class Character : MonoBehaviour
             transform.position = Vector3.zero;
         }
 
+        //Calcul des HPs enlevés avant d'itérer sur tous les cercles voisins.
         float hpReceived = -DamagePerSecond * Time.deltaTime;
         foreach (var circle in nearbyCircles)
         {
