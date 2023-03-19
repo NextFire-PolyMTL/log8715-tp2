@@ -7,9 +7,9 @@ using UnityEngine;
 using InnerType = System.Collections.Generic.Dictionary<uint, IComponent>;
 using AllComponents = System.Collections.Generic.Dictionary<uint, System.Collections.Generic.Dictionary<uint, IComponent>>;
 #else
-// using InnerType = ...; // TODO CHANGEZ MOI, UTILISEZ VOTRE PROPRE TYPE ICI
-// Devrait être InnerType = IComponent[] mais ce n'est pas compilable
-using AllComponents = System.Collections.Generic.Dictionary<uint, IComponent[]>; // TODO CHANGEZ MOI, UTILISEZ VOTRE PROPRE TYPE ICI
+// Laissé en commentaire car non compilable mais l'idée est là
+// using InnerType = IComponent[]; // TODO CHANGEZ MOI, UTILISEZ VOTRE PROPRE TYPE ICI
+// using AllComponents = IComponent[][]; // TODO CHANGEZ MOI, UTILISEZ VOTRE PROPRE TYPE ICI
 #endif
 
 // Appeler GetHashCode sur un Type est couteux. Cette classe sert a precalculer le hashcode
@@ -39,16 +39,17 @@ public class Singleton<V> where V : new()
 
 internal class ComponentsManager : Singleton<ComponentsManager>
 {
+#if BAD_PERF
     private AllComponents _allComponents = new AllComponents();
-
-    public const int maxEntities = 2000;
-
-#if !BAD_PERF
+#else
+    private IComponent[][] _allComponents = new IComponent[maxEntities][];
     // Maps entity id to index in the component arrays
     private uint?[] _idToIndex = new uint?[maxEntities];
     // Next index to use in the component arrays (pool growing phase)
     private uint _nextIndex = 0;
 #endif
+
+    public const int maxEntities = 2000;
 
     public void DebugPrint()
     {
@@ -68,17 +69,21 @@ internal class ComponentsManager : Singleton<ComponentsManager>
 #else
         string toPrint = "";
         var allComponents = Instance.DebugGetAllComponents();
-        foreach (var type in allComponents)
+        for (int i = 0; i < allComponents.Length; i++)
         {
-            toPrint += $"{type.Key}: \n";
-            for (int i = 0; i < type.Value.Length; i++)
+            IComponent[] components = allComponents[i];
+            if (components != null)
             {
-                if (type.Value[i] != null)
+                toPrint += $"{i}: \n";
+                for (int j = 0; j < components.Length; j++)
                 {
-                    toPrint += $"\t{i}: {type.Value[i]}\n";
+                    if (components[j] != null)
+                    {
+                        toPrint += $"\t{j}: {components[j]}\n";
+                    }
                 }
+                toPrint += "\n";
             }
-            toPrint += "\n";
         }
         Debug.Log(toPrint);
 #endif
@@ -95,7 +100,7 @@ internal class ComponentsManager : Singleton<ComponentsManager>
         _allComponents[TypeRegistry<T>.typeID][entityID] = component;
 #else
         var typeId = TypeRegistry<T>.typeID;
-        if (!_allComponents.ContainsKey(typeId))
+        if (_allComponents[typeId] == null)
         {
             _allComponents[typeId] = new IComponent[maxEntities];
         }
@@ -113,7 +118,7 @@ internal class ComponentsManager : Singleton<ComponentsManager>
         _allComponents[TypeRegistry<T>.typeID].Remove(entityID);
 #else
         var typeId = TypeRegistry<T>.typeID;
-        if (_allComponents.ContainsKey(typeId))
+        if (_allComponents[typeId] != null)
         {
             var index = _idToIndex[entityID.id].Value;
             _allComponents[typeId][index] = null;
@@ -145,7 +150,7 @@ internal class ComponentsManager : Singleton<ComponentsManager>
         return false;
 #else
         var typeId = TypeRegistry<T>.typeID;
-        if (_allComponents.ContainsKey(typeId))
+        if (_allComponents[typeId] != null)
         {
             var index = _idToIndex[entityID.id].Value;
             component = (T)_allComponents[typeId][index];
@@ -162,7 +167,7 @@ internal class ComponentsManager : Singleton<ComponentsManager>
         return _allComponents[TypeRegistry<T>.typeID].ContainsKey(entity);
 #else
         var typeId = TypeRegistry<T>.typeID;
-        if (_allComponents.ContainsKey(typeId))
+        if (_allComponents[typeId] != null)
         {
             var index = _idToIndex[entity.id].Value;
             return _allComponents[typeId][index] != null;
@@ -184,9 +189,9 @@ internal class ComponentsManager : Singleton<ComponentsManager>
         }
 #else
         var typeId = TypeRegistry<T>.typeID;
-        if (!_allComponents.ContainsKey(typeId))
+        if (_allComponents[typeId] == null)
         {
-            _allComponents.Add(typeId, new IComponent[maxEntities]);
+            _allComponents[typeId] = new IComponent[maxEntities];
         }
         else
         {
@@ -209,7 +214,7 @@ internal class ComponentsManager : Singleton<ComponentsManager>
         }
 #else
         var typeId = TypeRegistry<T1>.typeID;
-        if (_allComponents.ContainsKey(typeId))
+        if (_allComponents[typeId] != null)
         {
             var entities = _allComponents[TypeRegistry<EntityComponent>.typeID];
             var components = _allComponents[typeId];
@@ -242,7 +247,7 @@ internal class ComponentsManager : Singleton<ComponentsManager>
 #else
         var typeId1 = TypeRegistry<T1>.typeID;
         var typeId2 = TypeRegistry<T2>.typeID;
-        if (_allComponents.ContainsKey(typeId1) && _allComponents.ContainsKey(typeId2))
+        if (_allComponents[typeId1] != null && _allComponents[typeId2] != null)
         {
             var entities = _allComponents[TypeRegistry<EntityComponent>.typeID];
             var components1 = _allComponents[typeId1];
@@ -278,7 +283,7 @@ internal class ComponentsManager : Singleton<ComponentsManager>
         var typeId1 = TypeRegistry<T1>.typeID;
         var typeId2 = TypeRegistry<T2>.typeID;
         var typeId3 = TypeRegistry<T3>.typeID;
-        if (_allComponents.ContainsKey(typeId1) && _allComponents.ContainsKey(typeId2) && _allComponents.ContainsKey(typeId3))
+        if (_allComponents[typeId1] != null && _allComponents[typeId2] != null && _allComponents[typeId3] != null)
         {
             var entities = _allComponents[TypeRegistry<EntityComponent>.typeID];
             var components1 = _allComponents[typeId1];
@@ -317,7 +322,7 @@ internal class ComponentsManager : Singleton<ComponentsManager>
         var typeId2 = TypeRegistry<T2>.typeID;
         var typeId3 = TypeRegistry<T3>.typeID;
         var typeId4 = TypeRegistry<T4>.typeID;
-        if (_allComponents.ContainsKey(typeId1) && _allComponents.ContainsKey(typeId2) && _allComponents.ContainsKey(typeId3) && _allComponents.ContainsKey(typeId4))
+        if (_allComponents[typeId1] != null && _allComponents[typeId2] != null && _allComponents[typeId3] != null && _allComponents[typeId4] != null)
         {
             var entities = _allComponents[TypeRegistry<EntityComponent>.typeID];
             var components1 = _allComponents[typeId1];
@@ -336,7 +341,11 @@ internal class ComponentsManager : Singleton<ComponentsManager>
 #endif
     }
 
+#if BAD_PERF
     public AllComponents DebugGetAllComponents()
+#else
+    public IComponent[][] DebugGetAllComponents()
+#endif
     {
         return _allComponents;
     }
