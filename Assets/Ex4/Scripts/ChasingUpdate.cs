@@ -1,33 +1,59 @@
+using Unity.Burst;
 using Unity.Collections;
 using Unity.Jobs;
 using UnityEngine;
-using static JobHandler;
 
+/* Defines the Job structure for chasing behaviour */
 public class ChasingUpdate {
-    public static NativeArray<Vector3> emptyArray = new NativeArray<Vector3>(0, Allocator.Persistent);
 
+	/* Job handling the chasing behaviour of preys and predators */
+	[BurstCompile(CompileSynchronously = true)]
+	public struct ChaseJob : IJobParallelFor {
+		/* Iterated on and modified. The entity's velocity */
+		public NativeArray<Vector3> ownVel;
+		/* Iterated on. The entity's position */
+		[ReadOnly] public NativeArray<Vector3> ownPos;
+		/* All the positions of the entity's of the type chased */
+		[ReadOnly] public NativeArray<Vector3> chasedPos;
+		/* The reference speed for the entity type considered */
+		[ReadOnly] public float refSpeed;
 
-    public static void ApplyJob() {
-        int preyCount = SimulationMain.PreyPos.Length;
-        int predCount = SimulationMain.PredPos.Length;
+		public void Execute(int i) {
+			float closestDist = float.MaxValue;
+			Vector3 closestPos = ownPos[i];
+			foreach (var pos in chasedPos) {
+				var dist = Vector3.Distance(pos, ownPos[i]);
+				if (dist < closestDist) {
+					closestDist = dist;
+					closestPos = pos;
+				}
+			}
+			ownVel[i] = (closestPos - ownPos[i]) * refSpeed;
+		}
+	}
 
-        var preyJob = new ChaseJob() {
-            ownVel = SimulationMain.PreyVel,
-            ownPos = SimulationMain.PreyPos,
-            chasedPos = SimulationMain.PlantPos,
-            refSpeed = Ex4Config.PreySpeed
-        };
-        var predJob = new ChaseJob() {
-            ownVel = SimulationMain.PredVel,
-            ownPos = SimulationMain.PredPos,
-            chasedPos = SimulationMain.PreyPos,
-            refSpeed = Ex4Config.PredatorSpeed
-        };
+	/* Gets all the velocities updated */
+	public static void ApplyJob() {
+		int preyCount = SimulationMain.PreyPos.Length;
+		int predCount = SimulationMain.PredPos.Length;
 
-        var preyJH = preyJob.Schedule<ChaseJob>(preyCount, 64);
-        var predJH = predJob.Schedule<ChaseJob>(predCount, 64);
+		var preyJob = new ChaseJob() {
+			ownVel = SimulationMain.PreyVel,
+			ownPos = SimulationMain.PreyPos,
+			chasedPos = SimulationMain.PlantPos,
+			refSpeed = Ex4Config.PreySpeed
+		};
+		var predJob = new ChaseJob() {
+			ownVel = SimulationMain.PredVel,
+			ownPos = SimulationMain.PredPos,
+			chasedPos = SimulationMain.PreyPos,
+			refSpeed = Ex4Config.PredatorSpeed
+		};
 
-        preyJH.Complete();
-        predJH.Complete();
-    }
+		var preyJH = preyJob.Schedule<ChaseJob>(preyCount, 64);
+		var predJH = predJob.Schedule<ChaseJob>(predCount, 64);
+
+		preyJH.Complete();
+		predJH.Complete();
+	}
 }
