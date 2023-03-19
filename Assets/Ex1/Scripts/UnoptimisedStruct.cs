@@ -1,16 +1,16 @@
 using UnityEngine;
 public struct UnoptimisedStruct1
 {
-    public UnoptimizedStruct2 mainFriend;  // 48 ??
+    public UnoptimizedStruct2 mainFriend;  // 48 Bytes after optim
     public UnoptimizedStruct2[] otherFriends; // Pointer = 8 Bytes
     public float[] distancesFromObjectives; // Pointer = 8 Bytes
     public double range; // Double = 8 Bytes
-    public Vector3 position; // 3x float = 12 bytes
+    public Vector3 position; // 3x float = 12 Bytes
     public float velocity; // float = 4 Bytes
     public float size; // float = 4 Bytes
-    public int baseHP; // int = 4 bytes
-    public int nbAllies; // int = 4 bytes
-    public int currentHp; // int = 4 bytes
+    public int baseHP; // int = 4 Bytes
+    public int nbAllies; // int = 4 Bytes
+    public int currentHp; // int = 4 Bytes
     public byte colorAlpha; // Byte = 1 Byte
     public bool canJump; // Bool = 1 Byte
     public bool isVisible; // Bool = 1 Byte
@@ -46,14 +46,14 @@ public enum FriendState
 
 public struct UnoptimizedStruct2
 {
-    public Vector3 position; // 3x float = 12 bytes
+    public Vector3 position; // 3x float = 12 Bytes
     public float height; // float = 4 Bytes
     public double maxSight; // Double = 8 Bytes
     public float velocity; // float = 4 Bytes
     public float acceleration; // float = 4 Bytes
     public float maxVelocity; // float = 4 Bytes
     public int currentObjective; // int = 4 Bytes
-    public FriendState currentState; // enum short?? 1 Byte?
+    public FriendState currentState; // enum = 4 Bytes (int)
     public bool canJump; // Bool = 1 Byte
     public bool isAlive; // Bool = 1 Byte
 
