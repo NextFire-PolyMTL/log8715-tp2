@@ -29,16 +29,16 @@ public class Circle : MonoBehaviour
     {
         _health = BaseHealth;
 
-        //Le gameObject d'un cerle se trouve toujours dans la même grille: autant la conserver une bonne fois pour toute dans une variable global
+        //Le gameObject d'un cercle se trouve toujours dans la même grille: autant la conserver une bonne fois pour toute dans une variable globale
         _grid = GameObject.FindObjectOfType<Grid>();
-        //Le gameObject d'un cerle ne change pas de spriteRendrer: autant le conserver une bonne fois pour toute dans une variable global
+        //Le gameObject d'un cerle ne change pas de spriteRendrer: autant le conserver une bonne fois pour toute dans une variable globale
         _spriteRenderer = gameObject.GetComponent<SpriteRenderer>();
 
         //Les disques étant fixes, il n'est pas nécessaire d'actualiser leur voisinage à chaque itération
         var nearbyColliders = Physics2D.OverlapCircleAll(transform.position, HealingRange);
-        //On récupère directemment les cercle à partir des colliders prélevé juste au dessus.
-        /*Dans le cas où un de ces colliders ne serait pas attaché à un gameObject avec une composant Circle,
-        nous avons prévéré utiliser une liste que l'on transforme ensuite en array pour une plus grande performance
+        //On récupère directemment les cercles à partir des colliders prélevés juste au dessus.
+        /*Dans le cas où un de ces colliders ne seraient pas attaché à un gameObject avec une composant Circle,
+        nous avons préféré utiliser une liste que l'on transforme ensuite en array pour une plus grande performance
         du fait d'un accès contigu des valeurs en mémoire.*/
         var nearbyCirclesList = new List<Circle>();
         for (var i = 0; i < nearbyColliders.Length; i++)
@@ -66,7 +66,7 @@ public class Circle : MonoBehaviour
 
     private void HealNearbyCircles()
     {
-        //Calcul les HP donné avant d'itérer sur tous les disques voisins.
+        //Calcul les HP donnés avant d'itérer sur tous les disques voisins.
         float hpReceived = HealingPerSecond * Time.deltaTime;
         foreach (var circle in _nearbyCircles)
         {
